@@ -9,12 +9,7 @@ const oS = require("os-utils");
 const dbconnect = require("./src/dbconnect");
 const csv = require("csv-parser");
 const fs = require("fs");
-const {
-  AgentName,
-  UserDetails,
-  PolicyCarrier,
-  PolicyInfo,
-} = require("./controller/AgentDetails");
+const { UserDetails, PolicyInfo } = require("./controller/AgentDetails");
 var results = [];
 
 app.use(bodyParser.json());
@@ -44,11 +39,10 @@ dbconnect.connectToServer(function (err, client) {
 });
 
 app.get("/user/:username", (req, res) => {
-  console.log(req.params);
-  var username = req.params;
+  var username = req.params.username;
   if (username != "") {
-    console.log("Get api");
-    UserDetails.find({ firstname: "Julia Brown" })
+    console.log("Get api", username);
+    UserDetails.find({ firstname: username })
       .then((user) => {
         var userId = user[0]._id;
         PolicyInfo.find({ user_id: userId })
@@ -65,6 +59,17 @@ app.get("/user/:username", (req, res) => {
   } else {
     res.send("Please provide a valid username!");
   }
+});
+
+app.get("/getAggPolicy", async (req, res) => {
+  var data = await UserDetails.find();
+  var policy = await PolicyInfo.find();
+
+  var obj = {
+    data: data,
+    policy: policy,
+  };
+  res.json(obj);
 });
 
 app.listen(port, () => {
