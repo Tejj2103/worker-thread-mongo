@@ -9,6 +9,12 @@ const oS = require("os-utils");
 const dbconnect = require("./src/dbconnect");
 const csv = require("csv-parser");
 const fs = require("fs");
+const {
+  AgentName,
+  UserDetails,
+  PolicyCarrier,
+  PolicyInfo,
+} = require("./controller/AgentDetails");
 var results = [];
 
 app.use(bodyParser.json());
@@ -35,6 +41,30 @@ dbconnect.connectToServer(function (err, client) {
       console.log("results");
       readFile.getData(results);
     });
+});
+
+app.get("/user/:username", (req, res) => {
+  console.log(req.params);
+  var username = req.params;
+  if (username != "") {
+    console.log("Get api");
+    UserDetails.find({ firstname: "Julia Brown" })
+      .then((user) => {
+        var userId = user[0]._id;
+        PolicyInfo.find({ user_id: userId })
+          .then((policy) => {
+            res.send(policy);
+          })
+          .catch((e) => {
+            res.send("Did not found");
+          });
+      })
+      .catch((e) => {
+        res.status(500).send("Sorry, cant find that");
+      });
+  } else {
+    res.send("Please provide a valid username!");
+  }
 });
 
 app.listen(port, () => {
