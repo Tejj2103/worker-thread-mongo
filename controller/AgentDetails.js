@@ -143,6 +143,16 @@ const PolicyInfoSchema = new mongoose.Schema({
   },
 });
 
+const DateTimeSchema = new mongoose.Schema({
+  // date: { type: Date, default: Date.now },
+  message: {
+    type: String,
+    trim: true,
+    lowercase: true,
+  },
+});
+DateTimeSchema.set("timestamps", true);
+
 const AgentName = mongoose.model("AgentName", AgentNameSchema);
 const UserDetails = mongoose.model("UserDetails", UserDetailsSchema);
 const UserAccountInfo = mongoose.model("UserAccountInfo", UserAccountSchema);
@@ -152,6 +162,7 @@ const PolicyCategoryLOB = mongoose.model(
 );
 const PolicyCarrier = mongoose.model("PolicyCarrier", PolicyCarrierSchema);
 const PolicyInfo = mongoose.model("PolicyInfo", PolicyInfoSchema);
+const DateTime = mongoose.model("DateTime", DateTimeSchema);
 module.exports = {
   AgentName,
   UserDetails,
@@ -159,4 +170,5 @@ module.exports = {
   PolicyCategoryLOB,
   PolicyCarrier,
   PolicyInfo,
+  DateTime,
 };
